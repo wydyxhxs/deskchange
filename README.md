@@ -4,6 +4,8 @@
 
 DeskChange 是一个面向 Windows 11 的虚拟桌面管理工具。它不替代 Windows 自带的虚拟桌面系统，而是在系统现有能力之上补齐更实用的日常操作：可配置快捷键、桌面新建与删除、开机自启，以及切换动画控制。
 
+DeskChange is a lightweight Windows 11 utility built on top of the native virtual desktop system. It adds practical controls that Windows does not expose in one place, including configurable hotkeys for desktops 1-4, desktop creation and deletion, startup options, and switch animation toggles.
+
 ![GitHub release](https://img.shields.io/github/v/release/wydyxhxs/deskchange?display_name=tag)
 ![Platform](https://img.shields.io/badge/Platform-Windows%2011-0078D4)
 ![Framework](https://img.shields.io/badge/.NET%20Framework-4.8-512BD4)
