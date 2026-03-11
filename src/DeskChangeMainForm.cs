@@ -1,6 +1,7 @@
 using System;
 using System.Drawing;
 using System.Windows.Forms;
+using DeskChange.Interop;
 using DeskChange.Services;
 
 namespace DeskChange
@@ -45,6 +46,8 @@ namespace DeskChange
 
         private bool _allowClose;
         private int _currentDesktopIndex;
+        private bool _isHidingToTray;
+        private bool _suppressInitialDisplay;
         private bool _suspendEvents;
         private int _systemDesktopCount;
 
@@ -141,6 +144,19 @@ namespace DeskChange
             _allowClose = true;
         }
 
+        public void PrepareForHiddenLaunch()
+        {
+            if (InvokeRequired)
+            {
+                BeginInvoke(new Action(PrepareForHiddenLaunch));
+                return;
+            }
+
+            _suppressInitialDisplay = true;
+            ShowInTaskbar = false;
+            Opacity = 0D;
+        }
+
         public void SetInlineMessage(string text, bool isError)
         {
             if (InvokeRequired)
@@ -161,7 +177,10 @@ namespace DeskChange
                 return;
             }
 
+            _suppressInitialDisplay = false;
             ShowInTaskbar = true;
+            Opacity = 1D;
+            WindowState = FormWindowState.Normal;
 
             if (!Visible)
             {
@@ -205,10 +224,34 @@ namespace DeskChange
         {
             base.OnResize(e);
 
-            if (!_allowClose && WindowState == FormWindowState.Minimized)
+            if (!_allowClose && !_isHidingToTray && WindowState == FormWindowState.Minimized)
             {
                 HideToTray();
             }
+        }
+
+        protected override void WndProc(ref Message m)
+        {
+            if (!_allowClose
+                && !_isHidingToTray
+                && m.Msg == NativeMethods.WM_SYSCOMMAND
+                && ((int)m.WParam & 0xFFF0) == NativeMethods.SC_CLOSE)
+            {
+                HideToTray();
+                return;
+            }
+
+            base.WndProc(ref m);
+        }
+
+        protected override void SetVisibleCore(bool value)
+        {
+            if (_suppressInitialDisplay && value)
+            {
+                value = false;
+            }
+
+            base.SetVisibleCore(value);
         }
 
         private Panel BuildActionCard(out Label messageLabel)
@@ -550,8 +593,28 @@ namespace DeskChange
 
         private void HideToTray()
         {
+            if (_isHidingToTray)
+            {
+                return;
+            }
+
+            _isHidingToTray = true;
             ShowInTaskbar = false;
-            Hide();
+            Opacity = 0D;
+
+            try
+            {
+                if (IsHandleCreated)
+                {
+                    NativeMethods.ShowWindow(Handle, NativeMethods.SW_HIDE);
+                }
+
+                Hide();
+            }
+            finally
+            {
+                _isHidingToTray = false;
+            }
         }
 
         private void OnDesktopCountComboBoxSelectedIndexChanged(object sender, EventArgs e)

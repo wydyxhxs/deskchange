@@ -53,7 +53,7 @@ Windows 自带虚拟桌面很好用，但默认交互更偏系统级，而不是
 下载地址：
 
 - [Latest Release](https://github.com/wydyxhxs/deskchange/releases/latest)
-- [v1.0.0](https://github.com/wydyxhxs/deskchange/releases/tag/v1.0.0)
+- [v1.0.1](https://github.com/wydyxhxs/deskchange/releases/tag/v1.0.1)
 
 ## 使用方式
 

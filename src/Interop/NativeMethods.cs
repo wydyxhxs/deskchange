@@ -5,8 +5,12 @@ namespace DeskChange.Interop
 {
     internal static class NativeMethods
     {
+        internal const int WM_CLOSE = 0x0010;
         internal const int WM_HOTKEY = 0x0312;
+        internal const int WM_SYSCOMMAND = 0x0112;
         internal const int INPUT_KEYBOARD = 1;
+        internal const int SC_CLOSE = 0xF060;
+        internal const int SW_HIDE = 0;
 
         internal const uint KEYEVENTF_EXTENDEDKEY = 0x0001;
         internal const uint KEYEVENTF_KEYUP = 0x0002;
@@ -63,5 +67,8 @@ namespace DeskChange.Interop
 
         [DllImport("user32.dll")]
         internal static extern uint MapVirtualKey(uint uCode, uint uMapType);
+
+        [DllImport("user32.dll")]
+        internal static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
     }
 }

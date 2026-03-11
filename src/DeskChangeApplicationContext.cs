@@ -47,6 +47,12 @@ namespace DeskChange
                 _hotkeyWindow = new HotkeyWindow();
                 _hotkeyWindow.HotkeyPressed += OnHotkeyPressed;
                 _mainForm = BuildMainForm(_appIcon);
+
+                if (_startHidden)
+                {
+                    _mainForm.PrepareForHiddenLaunch();
+                }
+
                 MainForm = _mainForm;
                 _trayMenu = BuildTrayMenu();
                 _notifyIcon = BuildNotifyIcon(_trayMenu, _appIcon);
@@ -72,11 +78,6 @@ namespace DeskChange
                 if (_startHidden)
                 {
                     AppLog.Info("DeskChange started in background mode.");
-                    _notifyIcon.ShowBalloonTip(
-                        2500,
-                        "DeskChange",
-                        "DeskChange 已在后台运行。双击托盘图标可重新打开设置窗口。",
-                        ToolTipIcon.Info);
                 }
                 else
                 {
